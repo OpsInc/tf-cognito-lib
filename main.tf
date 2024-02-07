@@ -34,8 +34,12 @@ resource "aws_cognito_user_pool" "pool" {
     }
   }
 
-  lambda_config {
-    post_confirmation = var.lambda_post_confirmation_arn
+  dynamic "lambda_config" {
+    for_each = var.lambda_post_confirmation_arn == "" ? toset([]) : toset(["lambda"])
+
+    content {
+      post_confirmation = var.lambda_post_confirmation_arn
+    }
   }
 
   device_configuration {
